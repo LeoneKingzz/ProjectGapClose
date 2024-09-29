@@ -102,7 +102,7 @@ namespace hooks
 		static void execute_sprint_attack(STATIC_ARGS, RE::Actor* a_actor);
 		static void begin_sprint(STATIC_ARGS, RE::Actor* a_actor);
 
-		static bool getrace_VLserana(RE::Actor *a_actor);
+		static bool is_valid_actor(RE::Actor* a_actor);
 		static bool isPowerAttacking(RE::Actor *a_actor);
 		static bool IsCasting(RE::Actor *a_actor);
 		static void UpdateCombatTarget(RE::Actor* a_actor);
