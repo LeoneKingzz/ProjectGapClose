@@ -123,9 +123,9 @@ namespace hooks
 		}
 		auto distance = a_actor->GetPosition().GetDistance(CTarget->GetPosition());
 
-		if (distance > 150.f){
+		if (distance > 130.0f){
 			int k;
-			for (k = 150; k <= distance; k += 10) {
+			for (k = 130; k <= distance; k += 10) {
 				wait_time += 0.1f;
 			}
 		}
@@ -166,6 +166,12 @@ namespace hooks
 	{
 		if (a_actor->AsActorState()->IsSprinting()){
 			a_actor->NotifyAnimationGraph("attackStartSprint");
+			auto bPGC_altered_drivenState = false;
+			if ((a_actor->GetGraphVariableBool("bPGC_altered_drivenState", bPGC_altered_drivenState) && bPGC_altered_drivenState)) {
+				a_actor->SetGraphVariableBool("bAnimationDriven", false);
+				a_actor->SetGraphVariableBool("bPGC_altered_drivenState", false);
+			}
+		}else{
 			auto bPGC_altered_drivenState = false;
 			if ((a_actor->GetGraphVariableBool("bPGC_altered_drivenState", bPGC_altered_drivenState) && bPGC_altered_drivenState)) {
 				a_actor->SetGraphVariableBool("bAnimationDriven", false);
