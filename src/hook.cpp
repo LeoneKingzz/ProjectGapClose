@@ -36,16 +36,17 @@ namespace hooks
 		}
 	}
 
-	
-	bool OnMeleeHitHook::getrace_VLserana(RE::Actor* a_actor)
+	bool OnMeleeHitHook::isHumanoid(RE::Actor* a_actor)
 	{
-		bool result = false;
-		const auto race = a_actor->GetRace();
-		const auto raceEDID = race->formEditorID;
-		if (raceEDID == "DLC1VampireBeastRace") {
-			if (a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key")) {
-				result = true;
-			}
+		auto bodyPartData = a_actor->GetRace() ? a_actor->GetRace()->bodyPartData : nullptr;
+		return bodyPartData && bodyPartData->GetFormID() == 0x1d;
+	}
+
+	bool OnMeleeHitHook::is_valid_actor(RE::Actor* a_actor)
+	{
+		bool result = true;
+		if (a_actor->IsPlayerRef() || a_actor->IsDead() || !isHumanoid(a_actor) || !(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak")) ) {
+			result = false;
 		}
 		return result;
 	}
@@ -227,7 +228,21 @@ namespace hooks
 				return RE::BSEventNotifyControl::kContinue;
 			}
 
-			//auto getcombatstate = event->newState.get();
+			if (!OnMeleeHitHook::is_valid_actor(a_actor)){
+				return RE::BSEventNotifyControl::kContinue;
+			}
+
+			auto getcombatstate = event->newState.get();
+
+			switch (getcombatstate)
+			{
+			case RE::ACTOR_COMBAT_STATE::kCombat:
+				/* code */
+				break;
+			
+			default:
+				break;
+			}
 
 			return RE::BSEventNotifyControl::kContinue;
 		}
