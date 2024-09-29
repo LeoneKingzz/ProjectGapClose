@@ -13,8 +13,6 @@ namespace hooks
 	using VM = RE::BSScript::Internal::VirtualMachine;
 	using StackID = RE::VMStackID;
 #define STATIC_ARGS [[maybe_unused]] VM *a_vm, [[maybe_unused]] StackID a_stackID, RE::StaticFunctionTag *
-     
-	void remove_item(RE::TESObjectREFR* a_ref, RE::TESBoundObject* a_item, std::uint32_t a_count, bool a_silent, RE::TESObjectREFR* a_otherContainer);
 
 	using EventResult = RE::BSEventNotifyControl;
 
@@ -100,18 +98,14 @@ namespace hooks
 
 		static void InterruptAttack(RE::Actor *a_actor);
 
-
-		static void ResetAttack(STATIC_ARGS, RE::Actor *a_actor);
-		static void BatForm(STATIC_ARGS, RE::Actor* a_actor, bool forward = false);
-		static void Night_Powers(STATIC_ARGS, RE::Actor* a_actor, bool mistform = false, bool sreflexes = false, bool tremor = false);
-		static void Mortal_Powers(STATIC_ARGS, RE::Actor* a_actor, bool transform = false, bool shadow = false, bool scream = false);
-		static void LevitateToggle(STATIC_ARGS, RE::Actor* a_actor);
+		static float deduce_wait_time(STATIC_ARGS, RE::Actor* a_actor);
+		static void execute_sprint_attack(STATIC_ARGS, RE::Actor* a_actor);
+		static void begin_sprint(STATIC_ARGS, RE::Actor* a_actor);
 
 		static bool getrace_VLserana(RE::Actor *a_actor);
 		static bool isPowerAttacking(RE::Actor *a_actor);
 		static bool IsCasting(RE::Actor *a_actor);
 		static void UpdateCombatTarget(RE::Actor* a_actor);
-		static void Evaluate_AI(RE::Actor* actor);
 	private:
 		OnMeleeHitHook() = default;
 		OnMeleeHitHook(const OnMeleeHitHook&) = delete;
