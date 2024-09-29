@@ -156,6 +156,7 @@ namespace hooks
 
 		if(!a_actor->AsActorState()->IsSprinting()){
 			a_actor->NotifyAnimationGraph("SprintStart");
+			a_actor->AsActorState()->actorState1.sprinting = 1;
 		}
 
 		const auto wait = RE::TESForm::LookupByEditorID<RE::MagicItem>("PCG_SprintAttack_Execute_Spell");
@@ -174,6 +175,7 @@ namespace hooks
 				a_actor->SetGraphVariableBool("bAnimationDriven", false);
 				a_actor->SetGraphVariableBool("bPGC_altered_drivenState", false);
 			}
+			a_actor->AsActorState()->actorState1.sprinting = 0;
 		}else{
 			auto bPGC_altered_drivenState = false;
 			if ((a_actor->GetGraphVariableBool("bPGC_altered_drivenState", bPGC_altered_drivenState) && bPGC_altered_drivenState)) {
