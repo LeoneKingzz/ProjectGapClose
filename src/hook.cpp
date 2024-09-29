@@ -45,7 +45,9 @@ namespace hooks
 	bool OnMeleeHitHook::is_valid_actor(RE::Actor* a_actor)
 	{
 		bool result = true;
-		if (a_actor->IsPlayerRef() || a_actor->IsDead() || !isHumanoid(a_actor) || !(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak")) ) {
+		if (a_actor->IsPlayerRef() || a_actor->IsDead() || !isHumanoid(a_actor) 
+		|| !(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak")) 
+		|| a_actor->HasKeywordString("PCG_ExcludeSprintAttacks")){
 			result = false;
 		}
 		return result;

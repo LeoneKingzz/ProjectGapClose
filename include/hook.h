@@ -106,6 +106,7 @@ namespace hooks
 		static bool isPowerAttacking(RE::Actor *a_actor);
 		static bool IsCasting(RE::Actor *a_actor);
 		static void UpdateCombatTarget(RE::Actor* a_actor);
+		static bool isHumanoid(RE::Actor *a_actor);
 	private:
 		OnMeleeHitHook() = default;
 		OnMeleeHitHook(const OnMeleeHitHook&) = delete;
