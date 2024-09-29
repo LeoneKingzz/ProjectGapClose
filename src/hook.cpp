@@ -297,6 +297,9 @@ namespace hooks
 		RE::Actor* actor = const_cast<RE::TESObjectREFR*>(a_event.holder)->As<RE::Actor>();
 		switch (hash(a_event.tag.c_str(), a_event.tag.size())) {
 		case "tailSprint"_h:
+			if (OnMeleeHitHook::is_valid_actor(actor)) {
+
+			}
 			break;
 
 		default:
