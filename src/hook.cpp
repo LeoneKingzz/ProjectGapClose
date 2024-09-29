@@ -232,14 +232,19 @@ namespace hooks
 				return RE::BSEventNotifyControl::kContinue;
 			}
 
-			auto getcombatstate = event->newState.get();
-
-			switch (getcombatstate)
-			{
+			switch (event->newState.get()) {
 			case RE::ACTOR_COMBAT_STATE::kCombat:
-				/* code */
+				if (!a_actor->HasSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility"))) {
+					a_actor->AddSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility"));
+				}
 				break;
-			
+
+			case RE::ACTOR_COMBAT_STATE::kNone:
+				if (a_actor->HasSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility"))) {
+					a_actor->RemoveSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility"));
+				}
+				break;
+
 			default:
 				break;
 			}
