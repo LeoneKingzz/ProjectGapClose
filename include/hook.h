@@ -88,45 +88,30 @@ namespace hooks
 	public:
 		[[nodiscard]] static OnMeleeHitHook& GetSingleton() noexcept;
 
-		static void InstallHook();
 		static void install();
 		// static void install_protected(){
 		// 	Install_Update();
 		// }
-		static bool VLS_SendVampireLordTransformation(STATIC_ARGS, RE::Actor* a_actor);
-		static bool VLS_RevertVampireLordform(STATIC_ARGS, RE::Actor* a_actor);
-		void UnequipAll(RE::Actor* a_actor);
-		void Unequip_DescendMode(RE::Actor* a_actor, RE::SpellItem* a_spell);
-		std::pair<bool, RE::SpellItem*> GetAttackSpell(RE::Actor* actor, bool lefthand = false);
-		void Re_EquipAll(RE::Actor *a_actor);
-		void Re_EquipAll_LevitateMode(RE::Actor *a_actor);
+
 		static bool BindPapyrusFunctions(VM* vm);
 		static void Set_iFrames(RE::Actor* actor);
 		static void Reset_iFrames(RE::Actor* actor);
 		static void dispelEffect(RE::MagicItem *spellForm, RE::Actor *a_target);
-		static void VLDrain(RE::Actor* a_actor, bool remove = false);
-		static void EquipfromInvent(RE::Actor* a_actor, RE::FormID a_formID);
-		static void VLS_CompleteTransformation(RE::Actor *a_actor);
-		static void VLS_CompleteReversion(RE::Actor* a_actor);
+
 		static void InterruptAttack(RE::Actor *a_actor);
+
+
 		static void ResetAttack(STATIC_ARGS, RE::Actor *a_actor);
 		static void BatForm(STATIC_ARGS, RE::Actor* a_actor, bool forward = false);
 		static void Night_Powers(STATIC_ARGS, RE::Actor* a_actor, bool mistform = false, bool sreflexes = false, bool tremor = false);
 		static void Mortal_Powers(STATIC_ARGS, RE::Actor* a_actor, bool transform = false, bool shadow = false, bool scream = false);
 		static void LevitateToggle(STATIC_ARGS, RE::Actor* a_actor);
-		//static float GetRelativeHeight(STATIC_ARGS, RE::Actor *a_actor);
-		void Store_CStyleSettings(RE::Actor *a_actor);
-		void Restore_CStyleSettings(RE::Actor *a_actor);
+
 		static bool getrace_VLserana(RE::Actor *a_actor);
 		static bool isPowerAttacking(RE::Actor *a_actor);
 		static bool IsCasting(RE::Actor *a_actor);
 		static void UpdateCombatTarget(RE::Actor* a_actor);
 		static void Evaluate_AI(RE::Actor* actor);
-		static bool Can_Transform(RE::Actor* a_actor);
-		// void update(RE::Actor* a_actor, float a_delta);
-		// void startTiming(RE::Actor *a_actor, float a_delta);
-	    // void finishTiming(RE::Actor *a_actor);
-
 	private:
 		OnMeleeHitHook() = default;
 		OnMeleeHitHook(const OnMeleeHitHook&) = delete;
@@ -135,23 +120,6 @@ namespace hooks
 
 		OnMeleeHitHook& operator=(const OnMeleeHitHook&) = delete;
 		OnMeleeHitHook& operator=(OnMeleeHitHook&&) = delete;
-
-		std::unordered_map<RE::Actor*, float> _parryTimer;
-		std::unordered_map<RE::Actor*, std::vector<RE::TESCombatStyle*>> _CStyledefault;
-		std::unordered_map<RE::Actor*, std::vector<RE::TESBoundObject*>> _Inventory;
-		std::unordered_map<RE::Actor*, std::vector<RE::SpellItem*>> _SpellList;
-		std::shared_mutex mtx_Inventory;
-		std::shared_mutex mtx_parryTimer;
-		std::shared_mutex mtx_SpellList;
-		std::shared_mutex mtx_CStyledefault;
-		bool _bUpdate;
-
-		/** Our new function */
-		static void OnMeleeHit(RE::Actor* attacker, RE::Actor* target, std::int64_t a_int1, bool a_bool,
-			void* a_unkptr);
-
-		/** The original function */
-		static inline REL::Relocation<decltype(OnMeleeHit)> _OnMeleeHit;
 
 	protected:
 
@@ -263,9 +231,4 @@ constexpr uint32_t hash(const char* data, size_t const size) noexcept
 constexpr uint32_t operator"" _h(const char* str, size_t size) noexcept
 {
 	return hash(str, size);
-}
-
-namespace FallLongDistance
-{
-	void Install();
 }
