@@ -112,6 +112,69 @@ namespace hooks
 		a_actor->NotifyAnimationGraph("staggerStop");
 	}
 
+	std::vector<RE::TESForm*> OnMeleeHitHook::GetEquippedForm(RE::Actor* actor)
+	{
+		std::vector<RE::TESForm*> Hen;
+
+		// if (actor->GetEquippedObject(true)) {
+		// 	Hen.push_back(actor->GetEquippedObject(true));
+		// }
+		if (actor->GetEquippedObject(false)) {
+			Hen.push_back(actor->GetEquippedObject(false));
+		}
+
+		return Hen;
+	}
+
+	bool OnMeleeHitHook::GetEquippedType_IsMelee(RE::Actor* actor)
+	{
+		bool result = false;
+		auto form_list = GetEquippedForm(actor);
+
+		if (!form_list.empty()) {
+			for (auto form : form_list) {
+				if (form) {
+					switch (*form->formType) {
+					case RE::FormType::Weapon:
+						if (const auto equippedWeapon = form->As<RE::TESObjectWEAP>()) {
+							switch (equippedWeapon->GetWeaponType()) {
+							case RE::WEAPON_TYPE::kHandToHandMelee:
+							case RE::WEAPON_TYPE::kOneHandSword:
+							case RE::WEAPON_TYPE::kOneHandDagger:
+							case RE::WEAPON_TYPE::kOneHandAxe:
+							case RE::WEAPON_TYPE::kOneHandMace:
+							case RE::WEAPON_TYPE::kTwoHandSword:
+							case RE::WEAPON_TYPE::kTwoHandAxe:
+								result = true;
+								break;
+							default:
+								break;
+							}
+						}
+						break;
+					case RE::FormType::Armor:
+						// if (auto equippedShield = form->As<RE::TESObjectARMO>()) {
+						// 	result = true;
+						// }
+						break;
+					default:
+						break;
+					}
+					if (result) {
+						break;
+					}
+				}
+				continue;
+			}
+		}
+		return result;
+	}
+
+	bool OnMeleeHitHook::is_melee(RE::Actor* actor)
+	{
+		return GetEquippedType_IsMelee(actor);
+	}
+
 	float OnMeleeHitHook::deduce_wait_time(STATIC_ARGS, RE::Actor* a_actor)
 	{
 		auto wait_time = 0.1f;
@@ -135,10 +198,22 @@ namespace hooks
 
 	void OnMeleeHitHook::begin_sprint(STATIC_ARGS, RE::Actor* a_actor)
 	{
+
+		auto magicTarget = a_actor->AsMagicTarget();
+		const auto magicEffect1 = RE::TESForm::LookupByEditorID("PCG_SprintAttackExecute_effect")->As<RE::EffectSetting>();
+
+		if (magicTarget->HasMagicEffect(magicEffect1)) {
+			return;
+		}
+
 		auto CTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
 		if (!CTarget) {
 			UpdateCombatTarget(a_actor);
 			CTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
+		}
+
+		if(a_actor->GetPosition().GetDistance(CTarget->GetPosition()) < 130.0f){
+			return;
 		}
 
 		bool hasLOS = false;
@@ -308,8 +383,10 @@ namespace hooks
 		RE::Actor* actor = const_cast<RE::TESObjectREFR*>(a_event.holder)->As<RE::Actor>();
 		switch (hash(a_event.tag.c_str(), a_event.tag.size())) {
 		case "tailSprint"_h:
-			if (OnMeleeHitHook::is_valid_actor(actor)) {
-
+		case "FootLeft"_h:
+		case "FootRight"_h:
+			if (actor->HasSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility")) && OnMeleeHitHook::is_melee(actor)) {
+				OnMeleeHitHook::begin_sprint(nullptr, 0.0, nullptr, actor);
 			}
 			break;
 
