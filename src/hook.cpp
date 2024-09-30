@@ -390,13 +390,13 @@ namespace hooks
 		// case "FootSprintLeft"_h:
 		// case "FootRight"_h:
 		// case "FootSprintRight"_h:
-			if (actor->IsInCombat() && OnMeleeHitHook::is_melee(actor) && !actor->IsAttacking()) {
-				auto bPGC_IsInCombat = false;
-				if ((actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
-					OnMeleeHitHook::begin_sprint(nullptr, 0, nullptr, actor);
-				}
+			// if (actor->IsInCombat() && OnMeleeHitHook::is_melee(actor) && !actor->IsAttacking()) {
+			// 	auto bPGC_IsInCombat = false;
+			// 	if ((actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
+			// 		OnMeleeHitHook::begin_sprint(nullptr, 0, nullptr, actor);
+			// 	}
 				
-			}
+			// }
 			break;
 
 		default:
