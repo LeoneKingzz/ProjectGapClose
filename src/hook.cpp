@@ -168,8 +168,8 @@ namespace hooks
 	void OnMeleeHitHook::execute_sprint_attack(STATIC_ARGS, RE::Actor* a_actor)
 	{
 		if (a_actor->AsActorState()->IsSprinting()){
-			//a_actor->NotifyAnimationGraph("attackStart");
 			a_actor->NotifyAnimationGraph("attackStartSprint");
+			a_actor->NotifyAnimationGraph("attackStart");
 			auto bPGC_altered_drivenState = false;
 			if ((a_actor->GetGraphVariableBool("bPGC_altered_drivenState", bPGC_altered_drivenState) && bPGC_altered_drivenState)) {
 				a_actor->SetGraphVariableBool("bAnimationDriven", false);
