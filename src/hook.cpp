@@ -393,7 +393,7 @@ namespace hooks
 		case "FootRight"_h:
 		case "FootSprintRight"_h:
 			if (actor->HasSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility")) && OnMeleeHitHook::is_melee(actor)) {
-				OnMeleeHitHook::begin_sprint(nullptr, 0.0, nullptr, actor);
+				OnMeleeHitHook::begin_sprint(nullptr, 0, nullptr, actor);
 			}
 			break;
 
