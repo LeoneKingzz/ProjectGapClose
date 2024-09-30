@@ -107,6 +107,10 @@ namespace hooks
 		static bool IsCasting(RE::Actor *a_actor);
 		static void UpdateCombatTarget(RE::Actor* a_actor);
 		static bool isHumanoid(RE::Actor *a_actor);
+		static bool is_melee(RE::Actor* actor);
+		static std::vector<RE::TESForm*> GetEquippedForm(RE::Actor* actor);
+		static bool GetEquippedType_IsMelee(RE::Actor* actor);
+
 	private:
 		OnMeleeHitHook() = default;
 		OnMeleeHitHook(const OnMeleeHitHook&) = delete;

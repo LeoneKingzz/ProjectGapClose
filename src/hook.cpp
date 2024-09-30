@@ -206,6 +206,11 @@ namespace hooks
 			return;
 		}
 
+		auto isShouting = false;
+		if (((a_actor->GetGraphVariableBool("isShouting ", isShouting) && isShouting)) || IsCasting(a_actor)) {
+			return;
+		}
+
 		auto CTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
 		if (!CTarget) {
 			UpdateCombatTarget(a_actor);
@@ -384,7 +389,9 @@ namespace hooks
 		switch (hash(a_event.tag.c_str(), a_event.tag.size())) {
 		case "tailSprint"_h:
 		case "FootLeft"_h:
+		case "FootSprintLeft"_h:
 		case "FootRight"_h:
+		case "FootSprintRight"_h:
 			if (actor->HasSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility")) && OnMeleeHitHook::is_melee(actor)) {
 				OnMeleeHitHook::begin_sprint(nullptr, 0.0, nullptr, actor);
 			}
