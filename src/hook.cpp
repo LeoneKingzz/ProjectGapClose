@@ -324,11 +324,11 @@ namespace hooks
 
 			switch (event->newState.get()) {
 			case RE::ACTOR_COMBAT_STATE::kCombat:
-				if (OnMeleeHitHook::is_valid_actor(a_actor)) {
-					const auto wait = RE::TESForm::LookupByEditorID<RE::MagicItem>("PCG_SprintAttack_Execute_Spell");
-					const auto caster = a_actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant);
-					caster->CastSpellImmediate(wait, true, a_actor, 1, false, 0.0, a_actor);
-				}
+				// if (OnMeleeHitHook::is_valid_actor(a_actor)) {
+				// 	const auto wait = RE::TESForm::LookupByEditorID<RE::MagicItem>("PCG_SprintAttack_Execute_Spell");
+				// 	const auto caster = a_actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant);
+				// 	caster->CastSpellImmediate(wait, true, a_actor, 1, false, 0.0, a_actor);
+				// }
 				a_actor->SetGraphVariableBool("bPGC_IsInCombat", true);
 				break;
 
