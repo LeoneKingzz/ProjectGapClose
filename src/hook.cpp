@@ -385,10 +385,10 @@ namespace hooks
 		RE::Actor* actor = const_cast<RE::TESObjectREFR*>(a_event.holder)->As<RE::Actor>();
 		switch (hash(a_event.tag.c_str(), a_event.tag.size())) {
 		case "tailSprint"_h:
-		case "FootLeft"_h:
-		case "FootSprintLeft"_h:
-		case "FootRight"_h:
-		case "FootSprintRight"_h:
+		// case "FootLeft"_h:
+		// case "FootSprintLeft"_h:
+		// case "FootRight"_h:
+		// case "FootSprintRight"_h:
 			if (actor->IsInCombat() && OnMeleeHitHook::is_melee(actor) && !actor->IsAttacking()) {
 				auto bPGC_IsInCombat = false;
 				if ((actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
