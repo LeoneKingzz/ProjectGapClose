@@ -321,26 +321,23 @@ namespace hooks
 				return RE::BSEventNotifyControl::kContinue;
 			}
 
-			// if (!OnMeleeHitHook::is_valid_actor(a_actor)){
-			// 	return RE::BSEventNotifyControl::kContinue;
-			// }
+			if (!OnMeleeHitHook::is_valid_actor(a_actor)){
+				return RE::BSEventNotifyControl::kContinue;
+			}
 
-			// switch (event->newState.get()) {
-			// case RE::ACTOR_COMBAT_STATE::kCombat:
-			// 	if (!a_actor->HasSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility"))) {
-			// 		a_actor->AddSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility"));
-			// 	}
-			// 	break;
+			switch (event->newState.get()) {
+			case RE::ACTOR_COMBAT_STATE::kCombat:
+				a_actor->SetGraphVariableBool("bPGC_IsInCombat", true);
+				break;
 
-			// case RE::ACTOR_COMBAT_STATE::kNone:
-			// 	if (a_actor->HasSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility"))) {
-			// 		a_actor->RemoveSpell(RE::TESForm::LookupByEditorID<RE::SpellItem>("PCG_Sprint_AttackAbility"));
-			// 	}
-			// 	break;
+			case RE::ACTOR_COMBAT_STATE::kSearching:
+			case RE::ACTOR_COMBAT_STATE::kNone:
+				a_actor->SetGraphVariableBool("bPGC_IsInCombat", false);
+				break;
 
-			// default:
-			// 	break;
-			// }
+			default:
+				break;
+			}
 
 			return RE::BSEventNotifyControl::kContinue;
 		}
@@ -392,8 +389,12 @@ namespace hooks
 		case "FootSprintLeft"_h:
 		case "FootRight"_h:
 		case "FootSprintRight"_h:
-			if (OnMeleeHitHook::is_valid_actor(actor) && OnMeleeHitHook::is_melee(actor) && !actor->IsAttacking()) {
-				OnMeleeHitHook::begin_sprint(nullptr, 0, nullptr, actor);
+			if (actor->IsInCombat() && OnMeleeHitHook::is_melee(actor) && !actor->IsAttacking()) {
+				auto bPGC_IsInCombat = false;
+				if ((actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
+					OnMeleeHitHook::begin_sprint(nullptr, 0, nullptr, actor);
+				}
+				
 			}
 			break;
 
