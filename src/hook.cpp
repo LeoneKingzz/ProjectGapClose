@@ -415,6 +415,111 @@ namespace hooks
 		return true;
 	}
 
+	float OnMeleeHitHook::get_group_threatRatio(RE::Actor* protagonist, RE::Actor* combat_target)
+	{
+		float result = 0.0f;
+		float MyTeam_total_threat = 0.0f;
+		float EnemyTeam_total_threat = 0.0f;
+		auto combatGroup = protagonist->GetCombatGroup();
+		if (combatGroup) {
+			
+			for (auto it = combatGroup->members.begin(); it != combatGroup->members.end(); ++it) {
+				if (it->memberHandle && it->memberHandle.get().get()) {
+					MyTeam_total_threat += it->threatValue;
+				}
+				continue;
+			}
+		}
+		auto EnemyGroup = combat_target->GetCombatGroup();
+		if (EnemyGroup) {
+			for (auto it = EnemyGroup->members.begin(); it != EnemyGroup->members.end(); ++it) {
+				if (it->memberHandle && it->memberHandle.get().get()) {
+					EnemyTeam_total_threat += it->threatValue;
+				}
+				continue;
+			}
+		}
+
+		if (MyTeam_total_threat > 0 && EnemyTeam_total_threat > 0) {
+			result = MyTeam_total_threat / EnemyTeam_total_threat;
+		}
+
+		return result;
+	}
+
+	float OnMeleeHitHook::get_personal_survivalRatio(RE::Actor* protagonist, RE::Actor* combat_target)
+	{
+		float result = 0.0f;
+		float MyTeam_total_threat = 0.0f;
+		float EnemyTeam_total_threat = 0.0f;
+		float personal_threat = 0.0f;
+		auto  combatGroup = protagonist->GetCombatGroup();
+		if (combatGroup) {
+			for (auto it = combatGroup->members.begin(); it != combatGroup->members.end(); ++it) {
+				if (it->memberHandle && it->memberHandle.get().get()) {
+					MyTeam_total_threat += it->threatValue;
+					if (it->memberHandle.get().get() == protagonist){
+						personal_threat += it->threatValue;
+					}
+				}
+				continue;
+			}
+		}
+		auto EnemyGroup = combat_target->GetCombatGroup();
+		if (EnemyGroup) {
+			for (auto it = EnemyGroup->members.begin(); it != EnemyGroup->members.end(); ++it) {
+				if (it->memberHandle && it->memberHandle.get().get()) {
+					EnemyTeam_total_threat += it->threatValue;
+				}
+				continue;
+			}
+		}
+
+		if (MyTeam_total_threat > 0 && EnemyTeam_total_threat > 0 && personal_threat > 0) {
+
+			auto personal_survival = personal_threat/EnemyTeam_total_threat;
+			auto Enemy_groupSurvival = EnemyTeam_total_threat/MyTeam_total_threat;
+
+			result = personal_survival/Enemy_groupSurvival;
+		}
+
+		return result;
+	}
+
+	float OnMeleeHitHook::get_personal_threatRatio(RE::Actor* protagonist, RE::Actor* combat_target)
+	{
+		float result = 0.0f;
+		float personal_threat = 0.0f;
+		float CTarget_threat = 0.0f;
+
+		auto  combatGroup = protagonist->GetCombatGroup();
+		if (combatGroup) {
+			for (auto it = combatGroup->members.begin(); it != combatGroup->members.end(); ++it) {
+				if (it->memberHandle && it->memberHandle.get().get() && it->memberHandle.get().get() == protagonist) {
+					personal_threat += it->threatValue;
+					break;
+				}
+				continue;
+			}
+		}
+		auto EnemyGroup = combat_target->GetCombatGroup();
+		if (EnemyGroup) {
+			for (auto it = EnemyGroup->members.begin(); it != EnemyGroup->members.end(); ++it) {
+				if (it->memberHandle && it->memberHandle.get().get() && it->memberHandle.get().get() == combat_target) {
+					CTarget_threat += it->threatValue;
+					break;
+				}
+				continue;
+			}
+		}
+
+		if (personal_threat > 0 && CTarget_threat > 0) {
+			result = personal_threat / CTarget_threat;
+		}
+
+		return result;
+	}
+
 	void OnMeleeHitHook::Update(RE::Actor* a_actor, [[maybe_unused]] float a_delta)
 	{
 		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
@@ -422,7 +527,11 @@ namespace hooks
 			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
 				auto confidence = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kConfidence);
 				auto aggression = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression);
-				
+
+				auto CTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
+				if (!CTarget) {
+					return;
+				}
 			}
 		}
 	}

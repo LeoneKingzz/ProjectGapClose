@@ -117,6 +117,9 @@ namespace hooks
 		static std::vector<RE::TESForm*> GetEquippedForm(RE::Actor* actor);
 		static bool GetEquippedType_IsMelee(RE::Actor* actor);
 		void Update(RE::Actor* a_actor, float a_delta);
+		float get_group_threatRatio(RE::Actor* protagonist, RE::Actor* combat_target);
+		float get_personal_threatRatio(RE::Actor* protagonist, RE::Actor* combat_target);
+		float get_personal_survivalRatio(RE::Actor* protagonist, RE::Actor* combat_target);
 
 	private:
 		OnMeleeHitHook() = default;
