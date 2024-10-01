@@ -3,14 +3,6 @@
 
 namespace hooks
 {
-
-	OnMeleeHitHook& OnMeleeHitHook::GetSingleton() noexcept
-	{
-		static OnMeleeHitHook instance;
-		return instance;
-	}
-
-
 	void OnMeleeHitHook::Set_iFrames(RE::Actor* actor)
 	{
 		actor->SetGraphVariableBool("bIframeActive", true);
@@ -324,11 +316,6 @@ namespace hooks
 
 			switch (event->newState.get()) {
 			case RE::ACTOR_COMBAT_STATE::kCombat:
-				// if (OnMeleeHitHook::is_valid_actor(a_actor)) {
-				// 	const auto wait = RE::TESForm::LookupByEditorID<RE::MagicItem>("PCG_SprintAttack_Execute_Spell");
-				// 	const auto caster = a_actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant);
-				// 	caster->CastSpellImmediate(wait, true, a_actor, 1, false, 0.0, a_actor);
-				// }
 				a_actor->SetGraphVariableBool("bPGC_IsInCombat", true);
 				break;
 
@@ -392,10 +379,7 @@ namespace hooks
 		// case "FootRight"_h:
 		// case "FootSprintRight"_h:
 			 if (actor->IsInCombat() && OnMeleeHitHook::is_melee(actor) && !actor->IsAttacking()) {
-			 	/*auto bPGC_IsInCombat = false;
-			 	if ((actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
-			 		OnMeleeHitHook::begin_sprint(nullptr, 0, nullptr, actor);
-			 	}*/
+			 	
 				
 			 }
 			break;
@@ -431,6 +415,17 @@ namespace hooks
 		return true;
 	}
 
+	void OnMeleeHitHook::Update(RE::Actor* a_actor, [[maybe_unused]] float a_delta)
+	{
+		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
+			auto bPGC_IsInCombat = false;
+			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
+				auto confidence = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kConfidence);
+				auto aggression = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression);
+				
+			}
+		}
+	}
 }
 
 // if (IsMoving(a_actor)) {

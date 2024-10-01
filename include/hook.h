@@ -4,6 +4,7 @@
 #include <unordered_set>
 #pragma warning(disable: 4100)
 
+static float& g_deltaTime = (*(float*)RELOCATION_ID(523660, 410199).address());
 
 namespace hooks
 {
@@ -84,12 +85,17 @@ namespace hooks
 	class OnMeleeHitHook
 	{
 	public:
-		[[nodiscard]] static OnMeleeHitHook& GetSingleton() noexcept;
+
+		static OnMeleeHitHook* GetSingleton()
+		{
+			static OnMeleeHitHook avInterface;
+			return &avInterface;
+		}
 
 		static void install();
-		// static void install_protected(){
-		// 	Install_Update();
-		// }
+		static void install_protected(){
+			Install_Update();
+		}
 
 		static bool BindPapyrusFunctions(VM* vm);
 		static void Set_iFrames(RE::Actor* actor);
@@ -110,6 +116,7 @@ namespace hooks
 		static bool is_melee(RE::Actor* actor);
 		static std::vector<RE::TESForm*> GetEquippedForm(RE::Actor* actor);
 		static bool GetEquippedType_IsMelee(RE::Actor* actor);
+		void Update(RE::Actor* a_actor, float a_delta);
 
 	private:
 		OnMeleeHitHook() = default;
@@ -122,19 +129,19 @@ namespace hooks
 
 	protected:
 
-		// struct Actor_Update
-		// {
-		// 	static void thunk(RE::Actor* a_actor, float a_delta)
-		// 	{
-		// 		func(a_actor, a_delta);
-		// 		GetSingleton().update(a_actor, g_deltaTime);
-		// 	}
-		// 	static inline REL::Relocation<decltype(thunk)> func;
-		// };
+		struct Actor_Update
+		{
+			static void thunk(RE::Actor* a_actor, float a_delta)
+			{
+				func(a_actor, a_delta);
+				GetSingleton()->Update(a_actor, g_deltaTime);
+			}
+			static inline REL::Relocation<decltype(thunk)> func;
+		};
 
-		// static void Install_Update(){
-		// 	stl::write_vfunc<RE::Character, 0xAD, Actor_Update>();
-		// }
+		static void Install_Update(){
+			stl::write_vfunc<RE::Character, 0xAD, Actor_Update>();
+		}
 
 	};
 
