@@ -524,7 +524,7 @@ namespace hooks
 	{
 		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
 			auto bPGC_IsInCombat = false;
-			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
+			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat) && is_melee(a_actor)) {
 				auto confidence = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kConfidence);
 				auto aggression = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression);
 
