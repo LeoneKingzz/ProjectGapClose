@@ -568,6 +568,31 @@ namespace hooks
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableAdvanceRadius", CPR_EnableAdvanceRadius) && CPR_EnableAdvanceRadius)) {
+					switch (static_cast<int>(confidence))
+					{
+					case 0:
+						/* code */
+						break;
+
+					case 1:
+						/* code */
+						break;
+
+					case 2:
+						/* code */
+						break;
+
+					case 3:
+						/* code */
+						break;
+
+					case 4:
+						/* code */
+						break;
+
+					default:
+						break;
+					}
 					
 				}
 
