@@ -571,7 +571,7 @@ namespace hooks
 					switch (static_cast<int>(confidence))
 					{
 					case 0:
-						/* code */
+						a_actor->SetGraphVariableFloat("CPR_InnerRadiusMax", 200.0f);
 						break;
 
 					case 1:
