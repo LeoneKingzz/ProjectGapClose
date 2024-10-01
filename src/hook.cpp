@@ -532,6 +532,52 @@ namespace hooks
 				if (!CTarget) {
 					return;
 				}
+
+				auto personal_threat = get_personal_threatRatio(a_actor, CTarget);
+				auto group_threat = get_group_threatRatio(a_actor, CTarget);
+				auto personal_survival = get_personal_survivalRatio(a_actor, CTarget);
+
+				if (personal_threat <= 0.625f){
+					a_actor->SetGraphVariableBool("CPR_EnableCircling", true);
+				}else{
+					a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
+				}
+
+				if (group_threat > 0.625f){
+					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", true);
+				}else{
+					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
+				}
+
+
+				if (personal_survival <= 0.625f){
+					a_actor->SetGraphVariableBool("CPR_EnableBackoff", true);
+					a_actor->SetGraphVariableBool("CPR_EnableFallback", true);
+				}else{
+					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
+					a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
+				}
+
+				auto CPR_EnableCircling = false;
+				auto CPR_EnableAdvanceRadius = false;
+				auto CPR_EnableBackoff = false;
+				auto CPR_EnableFallback = false;
+
+				if ((a_actor->GetGraphVariableBool("CPR_EnableCircling", CPR_EnableCircling) && CPR_EnableCircling)) {
+					
+				}
+
+				if ((a_actor->GetGraphVariableBool("CPR_EnableAdvanceRadius", CPR_EnableAdvanceRadius) && CPR_EnableAdvanceRadius)) {
+					
+				}
+
+				if ((a_actor->GetGraphVariableBool("CPR_EnableBackoff", CPR_EnableBackoff) && CPR_EnableBackoff)) {
+					
+				}
+
+				if ((a_actor->GetGraphVariableBool("CPR_EnableFallback", CPR_EnableFallback) && CPR_EnableFallback)) {
+					
+				}
 			}
 		}
 	}
