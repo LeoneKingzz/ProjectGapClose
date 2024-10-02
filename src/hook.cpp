@@ -520,6 +520,38 @@ namespace hooks
 		return result;
 	}
 
+	float OnMeleeHitHook::confidence_threshold(RE::Actor* a_actor, int confidence)
+	{
+		float result = 0.0f;
+
+		switch (confidence) {
+		case 0:
+			result = 1.25f;
+			break;
+
+		case 1:
+			result = 1.0f;
+			break;
+
+		case 2:
+			result = 0.75f;
+			break;
+
+		case 3:
+			result = 0.5f;
+			break;
+
+		case 4:
+			result = 0.25f;
+			break;
+
+		default:
+			break;
+		}
+
+		return result;
+	}
+
 	void OnMeleeHitHook::Update(RE::Actor* a_actor, [[maybe_unused]] float a_delta)
 	{
 		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
@@ -546,23 +578,22 @@ namespace hooks
 				auto group_threat = get_group_threatRatio(a_actor, CTarget);
 				auto personal_survival = get_personal_survivalRatio(a_actor, CTarget);
 
-				if (personal_threat <= 0.625f){
+				if (personal_threat <= confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableCircling", true);
-				}else{
+				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
 				}
 
-				if (group_threat > 0.625f){
+				if (group_threat > confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", true);
-				}else{
+				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
 				}
 
-
-				if (personal_survival <= 0.625f){
+				if (personal_survival <= confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", true);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", true);
-				}else{
+				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
 				}
