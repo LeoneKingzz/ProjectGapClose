@@ -580,22 +580,28 @@ namespace hooks
 
 				if (personal_threat <= confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableCircling", true);
+					logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled circling");
 				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
+					logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled circling");
 				}
 
 				if (group_threat > confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", true);
+					logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled advancing");
 				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
+					logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled advancing");
 				}
 
 				if (personal_survival <= confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", true);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", true);
+					logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled fallback");
 				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
+					logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled fallback");
 				}
 
 				auto CPR_EnableCircling = false;
