@@ -120,6 +120,7 @@ namespace hooks
 		float get_group_threatRatio(RE::Actor* protagonist, RE::Actor* combat_target);
 		float get_personal_threatRatio(RE::Actor* protagonist, RE::Actor* combat_target);
 		float get_personal_survivalRatio(RE::Actor* protagonist, RE::Actor* combat_target);
+		float AV_Mod(RE::Actor *a_actor, int a_aggression, float input, float mod);
 
 	private:
 		OnMeleeHitHook() = default;

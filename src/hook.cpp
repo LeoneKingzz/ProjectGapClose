@@ -188,6 +188,17 @@ namespace hooks
 		return wait_time;
 	}
 
+	float OnMeleeHitHook::AV_Mod(RE::Actor* a_actor, int actor_value, float input, float mod)
+	{
+
+		int k;
+		for (k = 0; k <= actor_value; k += 1) {
+			input += mod;
+		}
+
+		return input;
+	}
+
 	void OnMeleeHitHook::begin_sprint(STATIC_ARGS, RE::Actor* a_actor)
 	{
 
@@ -525,8 +536,8 @@ namespace hooks
 		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
 			auto bPGC_IsInCombat = false;
 			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat) && is_melee(a_actor)) {
-				auto confidence = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kConfidence);
-				auto aggression = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression);
+				auto confidence = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kConfidence));
+				auto aggression = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression));
 
 				auto CTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
 				if (!CTarget) {
@@ -564,43 +575,29 @@ namespace hooks
 				auto CPR_EnableFallback = false;
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableCircling", CPR_EnableCircling) && CPR_EnableCircling)) {
-					
+					a_actor->SetGraphVariableFloat("CPR_CirclingDistMax", 45.0f);
+					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMin", 30.0f);
+					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMax", 500.0f);
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableAdvanceRadius", CPR_EnableAdvanceRadius) && CPR_EnableAdvanceRadius)) {
-					switch (static_cast<int>(confidence))
-					{
-					case 0:
-						a_actor->SetGraphVariableFloat("CPR_InnerRadiusMax", 200.0f);
-						break;
-
-					case 1:
-						/* code */
-						break;
-
-					case 2:
-						/* code */
-						break;
-
-					case 3:
-						/* code */
-						break;
-
-					case 4:
-						/* code */
-						break;
-
-					default:
-						break;
-					}
-					
+					a_actor->SetGraphVariableFloat("CPR_InnerRadiusMax", AV_Mod(a_actor, confidence, 256.0f, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
+					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMin", AV_Mod(a_actor, confidence, 256.0f, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
+					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMid", AV_Mod(a_actor, confidence, 512.0f, -50.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
+					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMax", AV_Mod(a_actor, confidence, 1024.0f, -100.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableBackoff", CPR_EnableBackoff) && CPR_EnableBackoff)) {
+					a_actor->SetGraphVariableFloat("CPR_BackoffMinDistMult", 0.75f);
+					a_actor->SetGraphVariableFloat("CPR_BackoffChance", 0.25f);
 					
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableFallback", CPR_EnableFallback) && CPR_EnableFallback)) {
+					a_actor->SetGraphVariableFloat("CPR_FallbackDistMin", 96.0f);
+					a_actor->SetGraphVariableFloat("CPR_FallbackDistMax", 256.0f);
+					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMin", 0.75f);
+					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMax", 1.5f);
 					
 				}
 			}
