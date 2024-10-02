@@ -190,10 +190,11 @@ namespace hooks
 
 	float OnMeleeHitHook::AV_Mod(RE::Actor* a_actor, int actor_value, float input, float mod)
 	{
-
-		int k;
-		for (k = 0; k <= actor_value; k += 1) {
-			input += mod;
+		if (actor_value > 0){
+			int k;
+			for (k = 0; k <= actor_value; k += 1) {
+				input += mod;
+			}
 		}
 
 		return input;
@@ -536,8 +537,13 @@ namespace hooks
 		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
 			auto bPGC_IsInCombat = false;
 			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat) && is_melee(a_actor)) {
-				auto confidence = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kConfidence));
 				auto aggression = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression));
+
+				if (aggression == 3){
+					return;
+				}
+
+				auto confidence = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kConfidence));
 
 				auto CTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
 				if (!CTarget) {
@@ -575,9 +581,9 @@ namespace hooks
 				auto CPR_EnableFallback = false;
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableCircling", CPR_EnableCircling) && CPR_EnableCircling)) {
-					a_actor->SetGraphVariableFloat("CPR_CirclingDistMax", 45.0f);
-					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMin", 30.0f);
-					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMax", 500.0f);
+					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMin", AV_Mod(a_actor, confidence, 30.0f, -1.0f) + AV_Mod(a_actor, aggression, 0.0f, -1.0f));
+					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMax", AV_Mod(a_actor, confidence, 90.0f, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
+					a_actor->SetGraphVariableFloat("CPR_CirclingDistMax", AV_Mod(a_actor, confidence, 1024.0f, -100.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableAdvanceRadius", CPR_EnableAdvanceRadius) && CPR_EnableAdvanceRadius)) {
