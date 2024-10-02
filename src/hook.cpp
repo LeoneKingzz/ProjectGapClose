@@ -559,7 +559,7 @@ namespace hooks
 			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat) && is_melee(a_actor)) {
 				auto aggression = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression));
 
-				if (aggression == 3){
+				if (aggression >= 3){
 					a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
