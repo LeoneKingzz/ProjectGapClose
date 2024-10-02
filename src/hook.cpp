@@ -571,34 +571,35 @@ namespace hooks
 				auto CPR_EnableAdvanceRadius = false;
 				auto CPR_EnableBackoff = false;
 				auto CPR_EnableFallback = false;
+				auto R = (Actor_GetReach(a_actor) / 100.0f);
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableCircling", CPR_EnableCircling) && CPR_EnableCircling)) {
-					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMin", AV_Mod(a_actor, confidence, 30.0f, -1.0f) + AV_Mod(a_actor, aggression, 0.0f, -1.0f));
-					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMax", AV_Mod(a_actor, confidence, 90.0f, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
-					a_actor->SetGraphVariableFloat("CPR_CirclingDistMax", AV_Mod(a_actor, confidence, 1024.0f * Actor_GetReach(a_actor), -100.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
+					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMin", AV_Mod(a_actor, confidence, 30.0f * R, -1.0f) + AV_Mod(a_actor, aggression, 0.0f, -1.0f));
+					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMax", AV_Mod(a_actor, confidence, 90.0f * R, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
+					a_actor->SetGraphVariableFloat("CPR_CirclingDistMax", AV_Mod(a_actor, confidence, 1024.0f * R, -100.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableAdvanceRadius", CPR_EnableAdvanceRadius) && CPR_EnableAdvanceRadius)) {
-					a_actor->SetGraphVariableFloat("CPR_InnerRadiusMax", AV_Mod(a_actor, confidence, 256.0f, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
-					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMin", AV_Mod(a_actor, confidence, 256.0f, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
-					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMid", AV_Mod(a_actor, confidence, 512.0f, -50.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
-					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMax", AV_Mod(a_actor, confidence, 1024.0f, -100.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
+					a_actor->SetGraphVariableFloat("CPR_InnerRadiusMax", AV_Mod(a_actor, confidence, 256.0f * R, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
+					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMin", AV_Mod(a_actor, confidence, 256.0f * R, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
+					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMid", AV_Mod(a_actor, confidence, 512.0f * R, -50.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
+					a_actor->SetGraphVariableFloat("CPR_OuterRadiusMax", AV_Mod(a_actor, confidence, 1024.0f * R, -100.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableBackoff", CPR_EnableBackoff) && CPR_EnableBackoff)) {
-					a_actor->SetGraphVariableFloat("CPR_BackoffMinDistMult", AV_Mod(a_actor, confidence, 1.5f, -0.15f) + AV_Mod(a_actor, aggression, 0.0f, -0.02f));
+					a_actor->SetGraphVariableFloat("CPR_BackoffMinDistMult", AV_Mod(a_actor, confidence, 1.5f * R, -0.15f) + AV_Mod(a_actor, aggression, 0.0f, -0.02f));
 					a_actor->SetGraphVariableFloat("CPR_BackoffChance", AV_Mod(a_actor, confidence, 0.75f, -0.15f) + AV_Mod(a_actor, aggression, 0.0f, -0.02f));
 					
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableFallback", CPR_EnableFallback) && CPR_EnableFallback)) {
-					a_actor->SetGraphVariableFloat("CPR_FallbackDistMin", AV_Mod(a_actor, confidence, 192.0f, -24.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
-					a_actor->SetGraphVariableFloat("CPR_FallbackDistMax", AV_Mod(a_actor, confidence, 512.0f, -64.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
+					a_actor->SetGraphVariableFloat("CPR_FallbackDistMin", AV_Mod(a_actor, confidence, 192.0f * R, -24.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
+					a_actor->SetGraphVariableFloat("CPR_FallbackDistMax", AV_Mod(a_actor, confidence, 512.0f * R, -64.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
 					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMin", AV_Mod(a_actor, confidence, 1.5f, -0.15f) + AV_Mod(a_actor, aggression, 0.0f, -0.02f));
 					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMax", AV_Mod(a_actor, confidence, 3.0f, -0.30f) + AV_Mod(a_actor, aggression, 0.0f, -0.04f));
 				}
 
-				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * Actor_GetReach(a_actor)) {
+				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
 					a_actor->NotifyAnimationGraph("attackStartSprint");
 				}
 			}
