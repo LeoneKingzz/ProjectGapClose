@@ -555,8 +555,6 @@ namespace hooks
 	void OnMeleeHitHook::Update(RE::Actor* a_actor, [[maybe_unused]] float a_delta)
 	{
 		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
-			logger::info("Update Hook is working. Processing updates...");
-			logger::info("Name {} info {}"sv, a_actor->GetName(), "update recieved");
 			auto bPGC_IsInCombat = false;
 			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat) && is_melee(a_actor)) {
 				auto aggression = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression));
@@ -647,7 +645,7 @@ namespace hooks
 				a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
 				a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
 				a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
-				logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled CPR behaviour");
+				//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled CPR behaviour");
 			}
 		}
 	}
