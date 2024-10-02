@@ -378,10 +378,10 @@ namespace hooks
 		// case "FootSprintLeft"_h:
 		// case "FootRight"_h:
 		// case "FootSprintRight"_h:
-			 if (actor->IsInCombat() && OnMeleeHitHook::is_melee(actor) && !actor->IsAttacking()) {
+			if (actor->IsInCombat() && OnMeleeHitHook::is_melee(actor) && !actor->IsAttacking()) {
 			 	
 				
-			 }
+			}
 			break;
 
 		default:
