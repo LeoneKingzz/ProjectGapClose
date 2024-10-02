@@ -564,6 +564,7 @@ namespace hooks
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
+					logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled CPR behaviour");
 					return;
 				}
 
@@ -639,6 +640,12 @@ namespace hooks
 				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
 					a_actor->NotifyAnimationGraph("attackStartSprint");
 				}
+			}else{
+				a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
+				a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
+				a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
+				a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
+				logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled CPR behaviour");
 			}
 		}
 	}
