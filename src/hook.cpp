@@ -575,7 +575,7 @@ namespace hooks
 				if ((a_actor->GetGraphVariableBool("CPR_EnableCircling", CPR_EnableCircling) && CPR_EnableCircling)) {
 					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMin", AV_Mod(a_actor, confidence, 30.0f, -1.0f) + AV_Mod(a_actor, aggression, 0.0f, -1.0f));
 					a_actor->SetGraphVariableFloat("CPR_CirclingAngleMax", AV_Mod(a_actor, confidence, 90.0f, -10.0f) + AV_Mod(a_actor, aggression, 0.0f, -5.0f));
-					a_actor->SetGraphVariableFloat("CPR_CirclingDistMax", AV_Mod(a_actor, confidence, 1024.0f, -100.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
+					a_actor->SetGraphVariableFloat("CPR_CirclingDistMax", AV_Mod(a_actor, confidence, 1024.0f * Actor_GetReach(a_actor), -100.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableAdvanceRadius", CPR_EnableAdvanceRadius) && CPR_EnableAdvanceRadius)) {
@@ -598,7 +598,7 @@ namespace hooks
 					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMax", AV_Mod(a_actor, confidence, 3.0f, -0.30f) + AV_Mod(a_actor, aggression, 0.0f, -0.04f));
 				}
 
-				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 &&) {
+				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * Actor_GetReach(a_actor)) {
 					a_actor->NotifyAnimationGraph("attackStartSprint");
 				}
 			}

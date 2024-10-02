@@ -20,6 +20,9 @@ namespace hooks
 	using tActor_IsMoving = bool (*)(RE::Actor* a_this);
 	static REL::Relocation<tActor_IsMoving> IsMoving{ REL::VariantID(36928, 37953, 0x6116C0) };
 
+	typedef float (*tActor_GetReach)(RE::Actor* a_this);
+	static REL::Relocation<tActor_GetReach> Actor_GetReach{ RELOCATION_ID(37588, 38538) };
+
 	class animEventHandler
 	{
 	private:
