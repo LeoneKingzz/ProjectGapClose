@@ -108,9 +108,9 @@ namespace hooks
 	{
 		std::vector<RE::TESForm*> Hen;
 
-		// if (actor->GetEquippedObject(true)) {
-		// 	Hen.push_back(actor->GetEquippedObject(true));
-		// }
+		if (actor->GetEquippedObject(true)) {
+			Hen.push_back(actor->GetEquippedObject(true));
+		}
 		if (actor->GetEquippedObject(false)) {
 			Hen.push_back(actor->GetEquippedObject(false));
 		}
@@ -145,9 +145,9 @@ namespace hooks
 						}
 						break;
 					case RE::FormType::Armor:
-						// if (auto equippedShield = form->As<RE::TESObjectARMO>()) {
-						// 	result = true;
-						// }
+						if (auto equippedShield = form->As<RE::TESObjectARMO>()) {
+							result = true;
+						}
 						break;
 					default:
 						break;
@@ -555,6 +555,8 @@ namespace hooks
 	void OnMeleeHitHook::Update(RE::Actor* a_actor, [[maybe_unused]] float a_delta)
 	{
 		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
+			logger::info("Update Hook is working. Processing updates...")
+			logger::info("Name {} info {}"sv, a_actor->GetName(), "update recieved");
 			auto bPGC_IsInCombat = false;
 			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat) && is_melee(a_actor)) {
 				auto aggression = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression));
