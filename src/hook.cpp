@@ -310,7 +310,7 @@ namespace hooks
 		RE::BSEventNotifyControl ProcessEvent(const RE::TESCombatEvent* event, RE::BSTEventSource<RE::TESCombatEvent>*){
 			auto a_actor = event->actor->As<RE::Actor>();
 
-			if (!a_actor) {
+			if (!a_actor || a_actor->IsPlayerRef()) {
 				return RE::BSEventNotifyControl::kContinue;
 			}
 
