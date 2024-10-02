@@ -540,6 +540,10 @@ namespace hooks
 				auto aggression = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression));
 
 				if (aggression == 3){
+					a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
+					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
+					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
+					a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
 					return;
 				}
 
@@ -594,17 +598,16 @@ namespace hooks
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableBackoff", CPR_EnableBackoff) && CPR_EnableBackoff)) {
-					a_actor->SetGraphVariableFloat("CPR_BackoffMinDistMult", 0.75f);
-					a_actor->SetGraphVariableFloat("CPR_BackoffChance", 0.25f);
+					a_actor->SetGraphVariableFloat("CPR_BackoffMinDistMult", AV_Mod(a_actor, confidence, 1.5f, -0.15f) + AV_Mod(a_actor, aggression, 0.0f, -0.02f));
+					a_actor->SetGraphVariableFloat("CPR_BackoffChance", AV_Mod(a_actor, confidence, 0.75f, -0.15f) + AV_Mod(a_actor, aggression, 0.0f, -0.02f));
 					
 				}
 
 				if ((a_actor->GetGraphVariableBool("CPR_EnableFallback", CPR_EnableFallback) && CPR_EnableFallback)) {
-					a_actor->SetGraphVariableFloat("CPR_FallbackDistMin", 96.0f);
-					a_actor->SetGraphVariableFloat("CPR_FallbackDistMax", 256.0f);
-					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMin", 0.75f);
-					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMax", 1.5f);
-					
+					a_actor->SetGraphVariableFloat("CPR_FallbackDistMin", AV_Mod(a_actor, confidence, 192.0f, -24.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
+					a_actor->SetGraphVariableFloat("CPR_FallbackDistMax", AV_Mod(a_actor, confidence, 512.0f, -64.0f) + AV_Mod(a_actor, aggression, 0.0f, -10.0f));
+					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMin", AV_Mod(a_actor, confidence, 1.5f, -0.15f) + AV_Mod(a_actor, aggression, 0.0f, -0.02f));
+					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMax", AV_Mod(a_actor, confidence, 3.0f, -0.30f) + AV_Mod(a_actor, aggression, 0.0f, -0.04f));
 				}
 			}
 		}
