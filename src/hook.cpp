@@ -255,18 +255,6 @@ namespace hooks
 			a_actor->NotifyAnimationGraph("MCO_SprintPowerAttackInitiate");
 			a_actor->NotifyAnimationGraph("attackStartSprint");
 			a_actor->NotifyAnimationGraph("attackStart");
-			auto bPGC_altered_drivenState = false;
-			if ((a_actor->GetGraphVariableBool("bPGC_altered_drivenState", bPGC_altered_drivenState) && bPGC_altered_drivenState)) {
-				a_actor->SetGraphVariableBool("bAnimationDriven", false);
-				a_actor->SetGraphVariableBool("bPGC_altered_drivenState", false);
-			}
-			a_actor->AsActorState()->actorState1.sprinting = 0;
-		}else{
-			auto bPGC_altered_drivenState = false;
-			if ((a_actor->GetGraphVariableBool("bPGC_altered_drivenState", bPGC_altered_drivenState) && bPGC_altered_drivenState)) {
-				a_actor->SetGraphVariableBool("bAnimationDriven", false);
-				a_actor->SetGraphVariableBool("bPGC_altered_drivenState", false);
-			}
 		}
 	}
 
@@ -609,6 +597,10 @@ namespace hooks
 					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMin", AV_Mod(a_actor, confidence, 1.5f, -0.15f) + AV_Mod(a_actor, aggression, 0.0f, -0.02f));
 					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMax", AV_Mod(a_actor, confidence, 3.0f, -0.30f) + AV_Mod(a_actor, aggression, 0.0f, -0.04f));
 				}
+
+				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 &&) {
+					a_actor->NotifyAnimationGraph("attackStartSprint");
+				}
 			}
 		}
 	}
@@ -621,3 +613,4 @@ namespace hooks
 // auto isLevitating = false;
 // if ((a_actor->GetGraphVariableBool("isLevitating", isLevitating) && isLevitating)) {
 // }
+// a_actor->NotifyAnimationGraph("MCO_SprintPowerAttackInitiate");
