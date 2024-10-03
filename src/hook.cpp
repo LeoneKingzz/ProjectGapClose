@@ -564,7 +564,7 @@ namespace hooks
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
-					logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled CPR behaviour");
+					//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled CPR behaviour");
 					return;
 				}
 
@@ -581,10 +581,10 @@ namespace hooks
 
 				if (personal_threat <= confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableCircling", true);
-					logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled circling");
+					//logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled circling");
 				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
-					logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled circling");
+					//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled circling");
 				}
 
 				if (group_threat > confidence_threshold(a_actor, confidence)) {
@@ -598,11 +598,11 @@ namespace hooks
 				if (personal_survival <= confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", true);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", true);
-					logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled fallback");
+					//logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled fallback");
 				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
-					logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled fallback");
+					//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled fallback");
 				}
 
 				auto CPR_EnableCircling = false;
@@ -637,7 +637,9 @@ namespace hooks
 					a_actor->SetGraphVariableFloat("CPR_FallbackWaitTimeMax", AV_Mod(a_actor, confidence, 3.0f, -0.30f) + AV_Mod(a_actor, aggression, 0.0f, -0.04f));
 				}
 
-				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
+				bool hasLOS = false;
+
+				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 && (a_actor->HasLineOfSight(CTarget, hasLOS) && hasLOS) && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
 					a_actor->NotifyAnimationGraph("attackStartSprint");
 					logger::info("Name {} info {}"sv, a_actor->GetName(), "sent sprint attack");
 				}
