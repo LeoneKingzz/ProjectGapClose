@@ -541,23 +541,23 @@ namespace hooks
 		if (inverse){
 			switch (confidence) {
 			case 0:
-				result = 0.2f;
+				result = 0.1f;
 				break;
 
 			case 1:
-				result = 0.4f;
+				result = 0.3f;
 				break;
 
 			case 2:
-				result = 0.6f;
+				result = 0.5f;
 				break;
 
 			case 3:
-				result = 0.8f;
+				result = 0.7f;
 				break;
 
 			case 4:
-				result = 1.0f;
+				result = 0.9f;
 				break;
 
 			default:
@@ -599,15 +599,6 @@ namespace hooks
 			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
 				auto aggression = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression));
 
-				if (aggression >= 3){
-					a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
-					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
-					a_actor->SetGraphVariableBool("CPR_EnableBackoff", false);
-					a_actor->SetGraphVariableBool("CPR_EnableFallback", false);
-					//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled CPR behaviour");
-					return;
-				}
-
 				auto confidence = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kConfidence));
 
 				auto CTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
@@ -619,7 +610,7 @@ namespace hooks
 				auto group_threat = get_group_threatRatio(a_actor, CTarget);
 				auto personal_survival = get_personal_survivalRatio(a_actor, CTarget);
 
-				if (personal_threat <= confidence_threshold(a_actor, confidence)) {
+				if (personal_threat <= confidence_threshold(a_actor, confidence) && aggression != 3) {
 					a_actor->SetGraphVariableBool("CPR_EnableCircling", true);
 					//logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled circling");
 				} else {
@@ -627,7 +618,7 @@ namespace hooks
 					//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled circling");
 				}
 
-				if (is_melee(a_actor) && group_threat > confidence_threshold(a_actor, confidence)) {
+				if (is_melee(a_actor) && ((group_threat > confidence_threshold(a_actor, confidence)) || aggression == 3)) {
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", true);
 					//logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled advancing");
 				} else {
@@ -635,7 +626,7 @@ namespace hooks
 					//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled advancing");
 				}
 
-				if (personal_survival <= confidence_threshold(a_actor, confidence)) {
+				if (personal_survival <= confidence_threshold(a_actor, confidence) && aggression != 3) {
 					a_actor->SetGraphVariableBool("CPR_EnableBackoff", true);
 					a_actor->SetGraphVariableBool("CPR_EnableFallback", true);
 					//logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled fallback");
@@ -679,7 +670,7 @@ namespace hooks
 
 				bool hasLOS = false;
 
-				if (a_actor->AsActorState()->IsSprinting() && is_melee(a_actor) && (!(GenerateRandomFloat(0.0f, 1.0f) > confidence_threshold(a_actor, confidence, true))) && (a_actor->HasLineOfSight(CTarget, hasLOS) && hasLOS) && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
+				if (a_actor->AsActorState()->IsSprinting() && is_melee(a_actor) && ((!(GenerateRandomFloat(0.0f, 1.0f) > confidence_threshold(a_actor, confidence, true))) || aggression == 3) && (a_actor->HasLineOfSight(CTarget, hasLOS) && hasLOS) && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
 					a_actor->NotifyAnimationGraph("attackStartSprint");
 					logger::info("Name {} info {}"sv, a_actor->GetName(), "sent sprint attack");
 				}
