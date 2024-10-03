@@ -589,10 +589,10 @@ namespace hooks
 
 				if (group_threat > confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", true);
-					logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled advancing");
+					//logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled advancing");
 				} else {
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", false);
-					logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled advancing");
+					//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled advancing");
 				}
 
 				if (personal_survival <= confidence_threshold(a_actor, confidence)) {
