@@ -639,6 +639,7 @@ namespace hooks
 
 				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
 					a_actor->NotifyAnimationGraph("attackStartSprint");
+					logger::info("Name {} info {}"sv, a_actor->GetName(), "sent sprint attack");
 				}
 			}else{
 				a_actor->SetGraphVariableBool("CPR_EnableCircling", false);
