@@ -124,7 +124,9 @@ namespace hooks
 		float get_personal_threatRatio(RE::Actor* protagonist, RE::Actor* combat_target);
 		float get_personal_survivalRatio(RE::Actor* protagonist, RE::Actor* combat_target);
 		float AV_Mod(RE::Actor *a_actor, int a_aggression, float input, float mod);
-		float confidence_threshold(RE::Actor *a_actor, int confidence);
+		float confidence_threshold(RE::Actor *a_actor, int confidence, bool inverse = false);
+		int GenerateRandomInt(int value_a, int value_b);
+	    float GenerateRandomFloat(float value_a, float value_b);
 
 	private:
 		OnMeleeHitHook() = default;
@@ -134,6 +136,8 @@ namespace hooks
 
 		OnMeleeHitHook& operator=(const OnMeleeHitHook&) = delete;
 		OnMeleeHitHook& operator=(OnMeleeHitHook&&) = delete;
+
+		std::random_device rd;
 
 	protected:
 

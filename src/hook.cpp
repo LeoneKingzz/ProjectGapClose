@@ -520,35 +520,75 @@ namespace hooks
 		return result;
 	}
 
-	float OnMeleeHitHook::confidence_threshold(RE::Actor* a_actor, int confidence)
+	int OnMeleeHitHook::GenerateRandomInt(int value_a, int value_b)
+	{
+		std::mt19937 generator(rd());
+		std::uniform_int_distribution<int> dist(value_a, value_b);
+		return dist(generator);
+	}
+
+	float OnMeleeHitHook::GenerateRandomFloat(float value_a, float value_b)
+	{
+		std::mt19937 generator(rd());
+		std::uniform_real_distribution<float> dist(value_a, value_b);
+		return dist(generator);
+	}
+
+	float OnMeleeHitHook::confidence_threshold(RE::Actor* a_actor, int confidence, bool inverse)
 	{
 		float result = 0.0f;
 
-		switch (confidence) {
-		case 0:
-			result = 1.25f;
-			break;
+		if (inverse){
+			switch (confidence) {
+			case 0:
+				result = 0.2f;
+				break;
 
-		case 1:
-			result = 1.0f;
-			break;
+			case 1:
+				result = 0.4f;
+				break;
 
-		case 2:
-			result = 0.75f;
-			break;
+			case 2:
+				result = 0.6f;
+				break;
 
-		case 3:
-			result = 0.5f;
-			break;
+			case 3:
+				result = 0.8f;
+				break;
 
-		case 4:
-			result = 0.25f;
-			break;
+			case 4:
+				result = 1.0f;
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}
+		}else{
+			switch (confidence) {
+			case 0:
+				result = 1.25f;
+				break;
+
+			case 1:
+				result = 1.0f;
+				break;
+
+			case 2:
+				result = 0.75f;
+				break;
+
+			case 3:
+				result = 0.5f;
+				break;
+
+			case 4:
+				result = 0.25f;
+				break;
+
+			default:
+				break;
+			}
 		}
-
 		return result;
 	}
 
@@ -556,7 +596,7 @@ namespace hooks
 	{
 		if (a_actor->GetActorRuntimeData().currentProcess && a_actor->GetActorRuntimeData().currentProcess->InHighProcess() && a_actor->Is3DLoaded()){
 			auto bPGC_IsInCombat = false;
-			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat) && is_melee(a_actor)) {
+			if ((a_actor->GetGraphVariableBool("bPGC_IsInCombat", bPGC_IsInCombat) && bPGC_IsInCombat)) {
 				auto aggression = static_cast<int>(a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kAggression));
 
 				if (aggression >= 3){
@@ -587,7 +627,7 @@ namespace hooks
 					//logger::info("Name {} info {}"sv, a_actor->GetName(), "disabled circling");
 				}
 
-				if (group_threat > confidence_threshold(a_actor, confidence)) {
+				if (is_melee(a_actor) && group_threat > confidence_threshold(a_actor, confidence)) {
 					a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", true);
 					//logger::info("Name {} info {}"sv, a_actor->GetName(), "enabled advancing");
 				} else {
@@ -639,7 +679,7 @@ namespace hooks
 
 				bool hasLOS = false;
 
-				if (a_actor->AsActorState()->IsSprinting() && confidence >= 3 && (a_actor->HasLineOfSight(CTarget, hasLOS) && hasLOS) && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
+				if (a_actor->AsActorState()->IsSprinting() && is_melee(a_actor) && (!(GenerateRandomFloat(0.0f, 1.0f) > confidence_threshold(a_actor, confidence, true))) && (a_actor->HasLineOfSight(CTarget, hasLOS) && hasLOS) && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
 					a_actor->NotifyAnimationGraph("attackStartSprint");
 					logger::info("Name {} info {}"sv, a_actor->GetName(), "sent sprint attack");
 				}
