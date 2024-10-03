@@ -670,7 +670,7 @@ namespace hooks
 
 				bool hasLOS = false;
 
-				if (a_actor->AsActorState()->IsSprinting() && is_melee(a_actor) && ((!(GenerateRandomFloat(0.0f, 1.0f) > confidence_threshold(a_actor, confidence, true))) || aggression == 3) && (a_actor->HasLineOfSight(CTarget, hasLOS) && hasLOS) && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
+				if (a_actor->AsActorState()->IsSprinting() && is_melee(a_actor) && !a_actor->IsAttacking() && ((!(GenerateRandomFloat(0.0f, 1.0f) > confidence_threshold(a_actor, confidence, true))) || aggression == 3) && (a_actor->HasLineOfSight(CTarget, hasLOS) && hasLOS) && a_actor->GetPosition().GetDistance(CTarget->GetPosition()) <= 300.0f * R) {
 					a_actor->NotifyAnimationGraph("attackStartSprint");
 					logger::info("Name {} info {}"sv, a_actor->GetName(), "sent sprint attack");
 				}
