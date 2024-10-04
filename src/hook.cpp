@@ -409,9 +409,9 @@ namespace hooks
 
 	bool OnMeleeHitHook::BindPapyrusFunctions(VM* vm)
 	{
-		vm->RegisterFunction("deduce_wait_time", "PGC_NativeFunctions", deduce_wait_time);
-		vm->RegisterFunction("execute_sprint_attack", "PGC_NativeFunctions", execute_sprint_attack);
-		vm->RegisterFunction("begin_sprint", "PGC_NativeFunctions", begin_sprint);
+		// vm->RegisterFunction("deduce_wait_time", "PGC_NativeFunctions", deduce_wait_time);
+		// vm->RegisterFunction("execute_sprint_attack", "PGC_NativeFunctions", execute_sprint_attack);
+		// vm->RegisterFunction("begin_sprint", "PGC_NativeFunctions", begin_sprint);
 		return true;
 	}
 
